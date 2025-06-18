@@ -1,0 +1,45 @@
+import com.xpdustry.toxopid.spec.ModMetadata
+import com.xpdustry.toxopid.spec.ModPlatform
+
+plugins {
+  id "java"
+  id "com.xpdustry.toxopid" version "4.1.2"
+}
+
+def metadata = ModMetadata.fromJson(file(sourceSets.main.resources.srcDirs[0].toPath().resolve("plugin.hjson")))
+
+group = "com.xpdustry"
+version = metadata.version
+description = metadata.description
+targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_17
+
+repositories {
+  mavenCentral()
+  maven { url "https://maven.xpdustry.com/mindustry" }
+  maven { url "https://maven.xpdustry.com/releases" }
+  maven { url "https://www.jitpack.io" }
+}
+
+dependencies {
+  compileOnly toxopid.dependencies.arcCore
+  compileOnly toxopid.dependencies.mindustryCore
+  compileOnly "com.xpdustry:distributor-common-api:4.1.0"
+}
+
+toxopid {
+  compileVersion = "v${metadata.minGameVersion}"
+  platforms = [ModPlatform.SERVER]
+}
+
+jar {
+  archiveFileName = "${metadata.name}.jar"
+
+  // Copy the builded jar to the working directory
+  doLast {
+    copy {
+      from jar
+      into rootDir
+    }
+  }
+}
