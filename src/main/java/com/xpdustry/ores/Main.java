@@ -43,6 +43,7 @@ public class Main extends mindustry.mod.Plugin {
      try {
        while (true) {
          Thread.sleep(3000);
+         if (viewingQuantities.isEmpty()) continue;
          LimitedOres.ores.each((t, r) -> {
            viewingQuantities.each(p ->
              mindustry.gen.Call.labelReliable(p.con, "[#"+r.item.color+"]"+r.quantity, 3, t.worldx(), t.worldy()));

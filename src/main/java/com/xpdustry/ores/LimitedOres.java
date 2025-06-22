@@ -57,7 +57,7 @@ public class LimitedOres {
     public final Tile tile;
     public final Item item;
     public final ResourceType type;
-    public transient int quantity;
+    public int quantity;
     
     public ResourceTileContent(Tile tile, Item item, ResourceType type, int quantity) {
       this.tile = tile;
@@ -93,6 +93,10 @@ public class LimitedOres {
       });
       Events.on(EventType.WorldLoadBeginEvent.class, e -> {
         if (loaded) ores.clear();
+      });
+      //TODO: make an option to determine the ore quantity on the fly?
+      Events.on(EventType.WorldLoadEvent.class, e -> {
+        Vars.world.tiles.eachTile(LimitedOres::tileChanged);
       });
       
       eventsRegistered = true;
