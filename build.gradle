@@ -17,14 +17,12 @@ sourceCompatibility = JavaVersion.VERSION_17
 repositories {
   mavenCentral()
   maven { url "https://maven.xpdustry.com/mindustry" }
-  maven { url "https://maven.xpdustry.com/releases" }
   maven { url "https://www.jitpack.io" }
 }
 
 dependencies {
   compileOnly toxopid.dependencies.arcCore
   compileOnly toxopid.dependencies.mindustryCore
-  compileOnly "com.xpdustry:distributor-common-api:4.1.0"
 }
 
 toxopid {

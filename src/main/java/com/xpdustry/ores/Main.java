@@ -26,13 +26,43 @@
 package com.xpdustry.ores;
 
 
+import arc.struct.Seq;
+import arc.util.CommandHandler;
+
+import mindustry.gen.Player;
+
+
 public class Main extends mindustry.mod.Plugin {
+  public static final transient Seq<Player> viewingQuantities = new Seq<>();
+  public static final java.util.concurrent.ExecutorService exec = arc.util.Threads.executor(1);
   
   public void init() {
-
+    LimitedOres.init();
+    
+    arc.util.Threads.daemon("LimitedOresQuantityViewerDaemon", () -> {
+     try {
+       while (true) {
+         Thread.sleep(3000);
+         LimitedOres.ores.each((t, r) -> {
+           viewingQuantities.each(p ->
+             mindustry.gen.Call.labelReliable(p.con, "[#"+r.item.color+"]"+r.quantity, 3, t.worldx(), t.worldy()));
+         });
+         
+       }
+     } catch (InterruptedException ignored) {}
+    });
   }
   
-  public void registerServerCommands(arc.util.CommandHandler handler) {
+  public void registerServerCommands(CommandHandler handler) {
     //TODO reload command
+    
+  }
+  
+  public void registerClientCommands(CommandHandler handler) {
+    handler.<Player>register("view-quantity", "See remaining ore quantity per tile", (args, player) -> {
+      if (!player.admin) player.sendMessage("[scarlet]You must be an admin to use this command.");
+      else if (!viewingQuantities.addUnique(player)) 
+        viewingQuantities.remove(player);  
+    });
   }
 }
